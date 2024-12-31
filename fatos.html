@@ -1,0 +1,788 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>Feliz Ano Novo, Meu Amor!</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;700&family=Montserrat:wght@300;400;600&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background: linear-gradient(135deg, #0a192f 0%, #0d1b2a 100%);
+            color: #ffffff;
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        .stars {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        section {
+            min-height: 100vh;
+            padding: 4rem 2rem;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+
+        h1, h2 {
+            font-family: 'Dancing Script', cursive;
+            color: #ffd700;
+            margin-bottom: 2rem;
+        }
+
+        h1 {
+            font-size: 3.5rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        h2 {
+            font-size: 2.8rem;
+        }
+
+        .countdown {
+            display: flex;
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+
+        .countdown-item {
+            background: rgba(255,255,255,0.1);
+            padding: 1.5rem;
+            border-radius: 10px;
+            min-width: 100px;
+        }
+
+        .countdown-value {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #ffd700;
+        }
+
+        .countdown-label {
+            font-size: 0.9rem;
+            text-transform: uppercase;
+        }
+
+        .timeline {
+            max-width: 800px;
+            margin: 3rem auto;
+        }
+
+        .memory-card {
+            background: rgba(255,255,255,0.1);
+            padding: 2rem;
+            border-radius: 15px;
+            margin: 1.5rem 0;
+            transform: translateX(-100%);
+            opacity: 0;
+            transition: all 0.8s ease;
+        }
+
+        .memory-card.visible {
+            transform: translateX(0);
+            opacity: 1;
+        }
+
+        .wishes-board {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            max-width: 1200px;
+            margin: 2rem auto;
+        }
+
+        .wish-balloon {
+            background: rgba(255,215,0,0.1);
+            padding: 1.5rem;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .wish-balloon:hover {
+            transform: translateY(-5px);
+            background: rgba(255,215,0,0.2);
+        }
+
+        .edit-btn, .delete-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: #ffd700;
+            border: none;
+            padding: 5px;
+            cursor: pointer;
+            border-radius: 5px;
+            font-size: 0.8rem;
+        }
+
+        .delete-btn {
+            right: 40px;
+        }
+
+        .poem {
+            max-width: 600px;
+            margin: 2rem auto;
+            font-style: italic;
+        }
+
+        .poem p {
+            margin: 1rem 0;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.5s ease;
+        }
+
+        .poem p.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .hidden-message {
+            font-size: 1.5rem;
+            color: #ffd700;
+            margin: 2rem 0;
+            opacity: 0;
+        }
+
+        .gratitude-wall {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            max-width: 1000px;
+            margin: 2rem auto;
+        }
+
+        .gratitude-card {
+            background: rgba(255,255,255,0.1);
+            padding: 1.5rem;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            transform-style: preserve-3d;
+            perspective: 1000px;
+        }
+
+        .gratitude-card.flipped {
+            transform: rotateY(180deg);
+        }
+
+        .final-card {
+            max-width: 600px;
+            margin: 2rem auto;
+            padding: 2rem;
+            background: rgba(255,215,0,0.1);
+            border-radius: 20px;
+            display: none;
+        }
+
+        .btn {
+            padding: 1rem 2rem;
+            background: #ffd700;
+            color: #0a192f;
+            border: none;
+            border-radius: 25px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn:hover {
+            transform: scale(1.05);
+            background: #ffed4a;
+        }
+
+        @keyframes floating {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+            100% { transform: translateY(0px); }
+        }
+
+        .floating {
+            animation: floating 3s ease-in-out infinite;
+        }
+
+        .photo-gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 20px;
+            padding: 20px;
+            max-width: 1200px;
+            margin: 2rem auto;
+        }
+
+        .photo-container {
+            position: relative;
+            aspect-ratio: 1;
+            overflow: hidden;
+            border-radius: 12px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            background: rgba(255,255,255,0.1);
+        }
+
+        .photo-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+
+        .photo-container:hover img {
+            transform: scale(1.05);
+        }
+
+        .remove-photo {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: rgba(255,0,0,0.7);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .photo-container:hover .remove-photo {
+            opacity: 1;
+        }
+
+        .photo-upload-btn {
+            background: #ffd700;
+            color: #0a192f;
+            padding: 12px 24px;
+            border-radius: 25px;
+            border: none;
+            cursor: pointer;
+            font-size: 1.1rem;
+            transition: transform 0.3s ease;
+            margin-bottom: 20px;
+        }
+
+        .photo-upload-btn:hover {
+            transform: scale(1.05);
+            background: #ffed4a;
+        }
+
+    </style>
+</head>
+<body>
+    <div class="stars"></div>
+
+    <section id="welcome">
+        <h1 class="animate__animated animate__fadeIn">Bem-vinda, Meu Amor!</h1>
+        <div class="countdown">
+            <div class="countdown-item">
+                <div class="countdown-value" id="days">00</div>
+                <div class="countdown-label">Dias</div>
+            </div>
+            <div class="countdown-item">
+                <div class="countdown-value" id="hours">00</div>
+                <div class="countdown-label">Horas</div>
+            </div>
+            <div class="countdown-item">
+                <div class="countdown-value" id="minutes">00</div>
+                <div class="countdown-label">Minutos</div>
+            </div>
+            <div class="countdown-item">
+                <div class="countdown-value" id="seconds">00</div>
+                <div class="countdown-label">Segundos</div>
+            </div>
+        </div>
+    </section>
+
+    <section id="memories">
+        <h2>Nosso Ano Incrível</h2>
+        <div class="timeline">
+            <div class="memory-card">
+                <h3>Janeiro - O Começo de Tudo</h3>
+                <p>"Como neve que cai suavemente, nosso amor começou delicado e puro, transformando todo o cenário em algo mágico e único. Cada momento juntos foi como descobrir um novo universo de possibilidades."</p>
+            </div>
+            <div class="memory-card">
+                <h3>Fevereiro - Mês do Amor</h3>
+                <p>"Em fevereiro, nossos corações bateram ainda mais forte. Cada gesto de carinho, cada olhar trocado, cada momento compartilhado foi como uma página do mais belo romance sendo escrita."</p>
+            </div>
+            <div class="memory-card">
+                <h3>Março - Renovação</h3>
+                <p>"Como a natureza que se renova, nosso amor floresceu ainda mais. Descobrimos juntos novos sonhos, novos caminhos e novas formas de amar."</p>
+            </div>
+            <div class="memory-card">
+                <h3>Abril - Primavera dos Sorrisos</h3>
+                <p>"Cada sorriso seu foi como um raio de sol, aquecendo minha alma e fazendo florescer os mais belos sentimentos. Abril nos trouxe a certeza de que juntos somos mais fortes."</p>
+            </div>
+            <div class="memory-card">
+                <h3>Maio - Tempo de Celebrar</h3>
+                <p>"Maio nos trouxe momentos de celebração e gratidão. Cada conquista sua foi minha também, cada alegria compartilhada multiplicou nossa felicidade."</p>
+            </div>
+            <div class="memory-card">
+                <h3>Junho - Noites de Aconchego</h3>
+                <p>"As noites de junho nos trouxeram o aconchego do seu abraço, o calor do seu carinho. Sob as estrelas, nosso amor brilhou ainda mais forte."</p>
+            </div>
+            <div class="memory-card">
+                <h3>Julho - Noites Estreladas</h3>
+                <p>"Sob o céu de julho, descobrimos que cada estrela brilhante era um sonho que compartilhávamos juntos. Nosso amor cresceu como o universo: infinito e cheio de mistérios a serem descobertos."</p>
+            </div>
+            <div class="memory-card">
+                <h3>Agosto - Ventos de Mudança</h3>
+                <p>"Agosto trouxe ventos de mudança e crescimento. Juntos, enfrentamos desafios e celebramos vitórias, sempre de mãos dadas e corações unidos."</p>
+            </div>
+            <div class="memory-card">
+                <h3>Setembro - Primavera do Amor</h3>
+                <p>"Como a primavera que chegou, nosso amor se renovou. Cada momento juntos foi uma nova flor desabrochando no jardim do nosso relacionamento."</p>
+            </div>
+            <div class="memory-card">
+                <h3>Outubro - Dança das Folhas</h3>
+                <p>"Como folhas dançando ao vento, nossos corações dançaram em sintonia, criando uma melodia única e especial. Cada passo dessa dança nos aproximou ainda mais."</p>
+            </div>
+            <div class="memory-card">
+                <h3>Novembro - Gratidão</h3>
+                <p>"Novembro nos ensinou sobre gratidão. Sou grato por cada momento ao seu lado, por cada sorriso compartilhado, por cada sonho realizado juntos."</p>
+            </div>
+            <div class="memory-card">
+                <h3>Dezembro - O Mês da Magia</h3>
+                <p>"No último mês do ano, percebemos que cada momento juntos foi um presente precioso que o tempo nos deu. A magia do Natal só aumentou o brilho do nosso amor."</p>
+            </div>
+        </div>
+    </section>
+
+    <section id="wishes">
+        <h2>Desejos para Nosso Futuro</h2>
+        <div class="wishes-board">
+            <div class="wish-balloon">
+                <p>"Que cada amanhecer traga um novo motivo para sorrir ao seu lado."</p>
+            </div>
+            <div class="wish-balloon">
+                <p>"Que nosso amor cresça como as estrelas no céu: infinito e brilhante."</p>
+            </div>
+            <div class="wish-balloon">
+                <p>"Que possamos construir milhares de memórias juntos, cada uma mais especial que a outra."</p>
+            </div>
+            <div class="wish-balloon">
+                <p>"Que nossos sonhos se entrelacem como fios de ouro, formando uma tapeçaria única de amor."</p>
+            </div>
+        </div>
+        <div class="wish-input">
+            <textarea id="newWish" placeholder="Adicione seu desejo para nós..." rows="4"></textarea>
+            <button class="btn" onclick="addWish()">Adicionar Desejo</button>
+        </div>
+    </section>
+
+    <section id="poem">
+        <h2>Versos do Coração</h2>
+        <div class="poem">
+            <p>Entre as estrelas do céu infinito,</p>
+            <p>Encontrei em você meu lugar bonito.</p>
+            <p>Cada momento ao seu lado é precioso,</p>
+            <p>Como pétalas de rosa em jardim majestoso.</p>
+            <p>Seu sorriso ilumina minha manhã,</p>
+            <p>Seus olhos são a luz que me guia amanhã.</p>
+            <p>No novo ano que está chegando,</p>
+            <p>Quero continuar ao seu lado sonhando.</p>
+        </div>
+    </section>
+
+    <section id="hidden">
+        <h2>Descubra a Mensagem Secreta</h2>
+        <div id="scrambled-message">
+            <!-- Will be filled by JavaScript -->
+        </div>
+        <div class="hidden-message" id="secret-message">
+            "Você é o presente mais precioso que a vida poderia me dar."
+        </div>
+    </section>
+
+    <section id="gratitude">
+        <h2>Mural de Gratidão</h2>
+        <div class="gratitude-wall">
+            <div class="gratitude-card">
+                <div class="front">Por seu sorriso encantador</div>
+                <div class="back">Que ilumina todos os meus dias como o sol da manhã</div>
+            </div>
+            <div class="gratitude-card">
+                <div class="front">Por sua força inspiradora</div>
+                <div class="back">Que me motiva a ser uma pessoa melhor a cada dia</div>
+            </div>
+            <div class="gratitude-card">
+                <div class="front">Por seu coração generoso</div>
+                <div class="back">Que transborda amor e carinho em cada gesto</div>
+            </div>
+            <div class="gratitude-card">
+                <div class="front">Por seus sonhos compartilhados</div>
+                <div class="back">Que se entrelaçam aos meus, criando um futuro mais bonito</div>
+            </div>
+            <div class="gratitude-card">
+                <div class="front">Por sua companhia nas manhãs</div>
+                <div class="back">Que faz cada despertar ser mais especial e cheio de amor</div>
+            </div>
+            <div class="gratitude-card">
+                <div class="front">Por sua compreensão infinita</div>
+                <div class="back">Que me acolhe nos momentos difíceis e celebra minhas vitórias</div>
+            </div>
+            <div class="gratitude-card">
+                <div class="front">Por seu apoio incondicional</div>
+                <div class="back">Que me dá forças para superar qualquer obstáculo</div>
+            </div>
+            <div class="gratitude-card">
+                <div class="front">Por nossas risadas compartilhadas</div>
+                <div class="back">Que fazem a vida ser mais leve e alegre ao seu lado</div>
+            </div>
+            <div class="gratitude-card">
+                <div class="front">Por seu olhar carinhoso</div>
+                <div class="back">Que me faz sentir o ser mais especial do mundo</div>
+            </div>
+        </div>
+    </section>
+
+    <section id="new-year-memories">
+        <h2>Nossas Memórias da Virada</h2>
+        <input type="file" id="photoInput" accept="image/*" style="display: none;" multiple>
+        <button class="photo-upload-btn" onclick="document.getElementById('photoInput').click()">
+            Adicionar Fotos
+        </button>
+        <div class="photo-gallery" id="gallery"></div>
+    
+
+    <section id="final">
+        <button class="btn" id="final-btn">Abrir Presente de Ano Novo</button>
+        <div class="final-card" id="final-message">
+            <h2>Meu Amor...</h2>
+            <p>"Que este novo ano seja apenas o começo de uma jornada ainda mais incrível ao seu lado. Cada segundo com você é um presente que guardarei para sempre no coração. Você é minha inspiração, minha parceira, meu amor.</p>
+            <p>Em cada nascer do sol, encontro em seus olhos a luz que guia meus passos. Em cada anoitecer, seu abraço é o porto seguro onde quero estar. Você transformou minha vida em uma história de amor mais bonita do que eu poderia sonhar.</p>
+            <p>Que 2025 nos traga ainda mais momentos inesquecíveis, mais sonhos realizados, mais conquistas compartilhadas. Que nosso amor continue crescendo, se fortalecendo e inspirando a todos ao nosso redor.</p>
+            <p>Eu te amo infinitamente, hoje e sempre!"</p>
+        </div>
+    </section>
+
+    <script>
+        // Particles animation
+        function createStars() {
+            const stars = document.querySelector('.stars');
+            for (let i = 0; i < 100; i++) {
+                const star = document.createElement('div');
+                star.style.position = 'absolute';
+                star.style.left = `${Math.random() * 100}%`;
+                star.style.top = `${Math.random() * 100}%`;
+                star.style.width = `${Math.random() * 3}px`;
+                star.style.height = star.style.width;
+                star.style.backgroundColor = '#ffffff';
+                star.style.borderRadius = '50%';
+                star.style.opacity = Math.random();
+                star.style.animation = `twinkle ${Math.random() * 3 + 1}s infinite`;
+                stars.appendChild(star);
+            }
+        }
+
+        // Countdown Timer
+        function updateCountdown() {
+            const now = new Date().getTime();
+            const newYear = new Date('January 1, 2025 00:00:00').getTime();
+            const difference = newYear - now;
+
+            const days = Math.floor(difference / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((difference % (1000 * 60)) / 1000);
+
+            document.getElementById('days').textContent = days.toString().padStart(2, '0');
+            document.getElementById('hours').textContent = hours.toString().padStart(2, '0');
+            document.getElementById('minutes').textContent = minutes.toString().padStart(2, '0');
+            document.getElementById('seconds').textContent = seconds.toString().padStart(2, '0');
+
+            if (difference <= 0) {
+                clearInterval(countdownInterval);
+                document.querySelector('.countdown').innerHTML = '<h2>Feliz Ano Novo, Meu Amor!</h2>';
+            }
+        }
+
+        // Memory Cards Animation
+        function checkMemoryCards() {
+            const cards = document.querySelectorAll('.memory-card');
+            cards.forEach(card => {
+                const cardTop = card.getBoundingClientRect().top;
+                const windowHeight = window.innerHeight;
+                if (cardTop < windowHeight * 0.8) {
+                    card.classList.add('visible');
+                }
+            });
+        }
+
+        // Poem Animation
+        function checkPoem() {
+            const verses = document.querySelectorAll('.poem p');
+            verses.forEach(verse => {
+                const verseTop = verse.getBoundingClientRect().top;
+                const windowHeight = window.innerHeight;
+                if (verseTop < windowHeight * 0.8) {
+                    verse.classList.add('visible');
+                }
+            });
+        }
+
+        // Hidden Message Game
+        function setupHiddenMessage() {
+            const message = "Você é o meu presente mais valioso em todos os anos";
+            const scrambled = message.split(' ').map(word => {
+                return word.split('').sort(() => Math.random() - 0.5).join('');
+            }).join(' ');
+
+            document.getElementById('scrambled-message').innerHTML = `
+                <p>Descubra a mensagem decifrando as palavras:</p>
+                <p style="color: #ffd700; font-size: 1.5rem; margin: 1rem 0;">${scrambled}</p>
+                <input type="text" id="message-guess" placeholder="Digite sua resposta aqui..." 
+                    style="padding: 0.5rem; margin: 1rem 0; width: 80%; max-width: 400px;">
+                <button class="btn" onclick="checkMessage()">Verificar</button>
+            `;
+        }
+
+        function checkMessage() {
+            const guess = document.getElementById('message-guess').value.toLowerCase().trim();
+            const correct = "você é o meu presente mais valioso em todos os anos";
+
+            if (guess === correct) {
+                document.getElementById('secret-message').style.opacity = '1';
+                createFireworks();
+            } else {
+                alert('Tente novamente! Você está quase lá!');
+            }
+        }
+
+        // Gratitude Cards
+        function setupGratitudeCards() {
+            const cards = document.querySelectorAll('.gratitude-card');
+            cards.forEach(card => {
+                card.addEventListener('click', () => {
+                    card.classList.toggle('flipped');
+                });
+            });
+        }
+
+        // Wishes Board
+        function addWish() {
+            const wishText = document.getElementById('newWish').value;
+            if (wishText.trim() === '') return;
+
+            const wishesBoard = document.querySelector('.wishes-board');
+            const newWish = document.createElement('div');
+            newWish.className = 'wish-balloon floating';
+            newWish.innerHTML = `
+                <p>"${wishText}"</p>
+                <button class="edit-btn" onclick="editWish(this)">Editar</button>
+                <button class="delete-btn" onclick="deleteWish(this)">Excluir</button>
+            `;
+            wishesBoard.appendChild(newWish);
+
+            // Save to localStorage
+            const wishes = JSON.parse(localStorage.getItem('wishes') || '[]');
+            wishes.push(wishText);
+            localStorage.setItem('wishes', JSON.stringify(wishes));
+
+            document.getElementById('newWish').value = '';
+        }
+
+        function editWish(button) {
+            const wishBalloon = button.parentElement;
+            const wishText = wishBalloon.querySelector('p').textContent.replace(/"/g, '');
+            const newWishText = prompt('Edite seu desejo:', wishText);
+            if (newWishText) {
+                wishBalloon.querySelector('p').textContent = `"${newWishText}"`;
+
+                // Update localStorage
+                const wishes = JSON.parse(localStorage.getItem('wishes') || '[]');
+                const index = wishes.indexOf(wishText);
+                if (index !== -1) {
+                    wishes[index] = newWishText;
+                    localStorage.setItem('wishes', JSON.stringify(wishes));
+                }
+            }
+        }
+
+        function deleteWish(button) {
+            const wishBalloon = button.parentElement;
+            const wishText = wishBalloon.querySelector('p').textContent.replace(/"/g, '');
+            wishBalloon.remove();
+
+            // Update localStorage
+            const wishes = JSON.parse(localStorage.getItem('wishes') || '[]');
+            const index = wishes.indexOf(wishText);
+            if (index !== -1) {
+                wishes.splice(index, 1);
+                localStorage.setItem('wishes', JSON.stringify(wishes));
+            }
+        }
+
+        // Load saved wishes
+        function loadSavedWishes() {
+            const wishes = JSON.parse(localStorage.getItem('wishes') || '[]');
+            const wishesBoard = document.querySelector('.wishes-board');
+            wishes.forEach(wish => {
+                const wishElement = document.createElement('div');
+                wishElement.className = 'wish-balloon floating';
+                wishElement.innerHTML = `
+                    <p>"${wish}"</p>
+                    <button class="edit-btn" onclick="editWish(this)">Editar</button>
+                    <button class="delete-btn" onclick="deleteWish(this)">Excluir</button>
+                `;
+                wishesBoard.appendChild(wishElement);
+            });
+        }
+
+        // Final Card Animation
+        document.getElementById('final-btn').addEventListener('click', function() {
+            const finalMessage = document.getElementById('final-message');
+            finalMessage.style.display = 'block';
+            finalMessage.classList.add('animate__animated', 'animate__fadeInUp');
+
+            // Play soft music
+            const audio = new Audio('https://cdnjs.cloudflare.com/ajax/libs/howler/2.2.3/howler.min.js');
+            audio.play();
+        });
+
+        // Fireworks Effect
+        function createFireworks() {
+            const fireworks = document.createElement('div');
+            fireworks.className = 'fireworks';
+            document.body.appendChild(fireworks);
+
+            for (let i = 0; i < 50; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = '50%';
+                particle.style.top = '50%';
+                particle.style.backgroundColor = `hsl(${Math.random() * 360}, 50%, 50%)`;
+                particle.style.transform = `rotate(${Math.random() * 360}deg)`;
+                particle.style.animation = `explosion 1s ease-out forwards`;
+                fireworks.appendChild(particle);
+            }
+
+            setTimeout(() => {
+                fireworks.remove();
+            }, 1000);
+        }
+
+        // Add necessary styles for fireworks
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes explosion {
+                0% {
+                    transform: translate(0, 0);
+                    opacity: 1;
+                }
+                100% {
+                    transform: translate(var(--x), var(--y));
+                    opacity: 0;
+                }
+            }
+            .particle {
+                position: absolute;
+                width: 5px;
+                height: 5px;
+                border-radius: 50%;
+                pointer-events: none;
+            }
+            @keyframes twinkle {
+                0%, 100% { opacity: 1; }
+                50% { opacity: 0.3; }
+            }
+        `;
+        document.head.appendChild(style);
+
+        // Photo Upload Preview
+        function setupGallery() {
+            const photoInput = document.getElementById('photoInput');
+            
+            // Carrega fotos salvas
+            const savedPhotos = JSON.parse(localStorage.getItem('galleryPhotos') || '[]');
+            savedPhotos.forEach(photoData => addPhotoToGallery(photoData));
+
+            photoInput.addEventListener('change', function(e) {
+                const files = e.target.files;
+                for(let file of files) {
+                    const reader = new FileReader();
+                    reader.onload = function(event) {
+                        const photoData = event.target.result;
+                        addPhotoToGallery(photoData);
+                        savePhoto(photoData);
+                    };
+                    reader.readAsDataURL(file);
+                }
+                photoInput.value = '';
+            });
+        }
+
+        function addPhotoToGallery(photoData) {
+            const gallery = document.getElementById('gallery');
+            const container = document.createElement('div');
+            container.className = 'photo-container';
+            container.innerHTML = `
+                <img src="${photoData}" alt="Memory">
+                <button class="remove-photo" onclick="removePhoto(this)">×</button>
+            `;
+            gallery.appendChild(container);
+        }
+
+        function removePhoto(button) {
+            const container = button.parentElement;
+            const img = container.querySelector('img');
+            container.remove();
+            removeFromStorage(img.src);
+        }
+
+        function savePhoto(photoData) {
+            const savedPhotos = JSON.parse(localStorage.getItem('galleryPhotos') || '[]');
+            savedPhotos.push(photoData);
+            localStorage.setItem('galleryPhotos', JSON.stringify(savedPhotos));
+        }
+
+        function removeFromStorage(photoData) {
+            const savedPhotos = JSON.parse(localStorage.getItem('galleryPhotos') || '[]');
+            const index = savedPhotos.indexOf(photoData);
+            if (index > -1) {
+                savedPhotos.splice(index, 1);
+                localStorage.setItem('galleryPhotos', JSON.stringify(savedPhotos));
+            }
+        }
+
+        // Initialize everything
+        window.addEventListener('load', () => {
+            createStars();
+            updateCountdown();
+            setupHiddenMessage();
+            setupGratitudeCards();
+            loadSavedWishes();
+            setupGallery();
+        });
+
+        // Scroll animations
+        window.addEventListener('scroll', () => {
+            checkMemoryCards();
+            checkPoem();
+        });
+
+        // Start countdown
+        const countdownInterval = setInterval(updateCountdown, 1000);
+    </script>
+</body>
+</html>
